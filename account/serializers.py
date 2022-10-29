@@ -11,10 +11,11 @@ from account.models import User
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password, ])
     password_2 = serializers.CharField(write_only=True)
+    telegram = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ("username", 'email', 'password', 'password_2')
+        fields = ("username", 'email', 'password', 'password_2', 'telegram')
 
     def validate(self, data):
         if data['password'] != data['password_2']:
