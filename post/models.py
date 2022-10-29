@@ -5,6 +5,12 @@ from account.models import Author
 
 
 class Post(models.Model):
+    text = models.CharField(max_length=100)
+    created = models.DateTimeField(max_length=1, auto_now_add=True, default=1)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+
+
+class Rating(models.Model):
     score_post = [
         (1, '1'),
         (2, '2'),
@@ -12,11 +18,7 @@ class Post(models.Model):
         (4, '4'),
         (5, '5'),
     ]
-    text = models.CharField(max_length=100)
-    created = models.DateTimeField(max_length=1, auto_now_add=True, default=1)
-    score = models.CharField(max_length=1, choices=score_post, default=1)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
-
+    score = models.ForeignKey(Post, choices=score_post, on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
