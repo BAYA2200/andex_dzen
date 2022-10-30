@@ -1,41 +1,26 @@
 from rest_framework import serializers
-from .models import Author
 
-from django.contrib.auth.password_validation import validate_password
-from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
-
-from account.models import User
+from .models import Post, Comment, Mark
 
 
-class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, validators=[validate_password, ])
-    password_2 = serializers.CharField(write_only=True)
-    telegram = serializers.CharField(write_only=True)
-
+class PostSerializer(serializers.ModelSerializer):
+    average_rating = serializers.ReadOnlyField()
     class Meta:
-        model = User
-        fields = ("username", 'email', 'password', 'password_2', 'telegram')
-
-    def validate(self, data):
-        if data['password'] != data['password_2']:
-            raise ValidationError("Password do not match")
-        return data
-
-    def create(self, validated_data):
-        user = User.objects.create(
-            username=validated_data['username'],
-            email=validated_data['email']
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-
-        return user
-
-
-class AuthorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Author
+        model = Post
         fields = '__all__'
+        read_only_fields = ['user', ]
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = '__all__'
+        read_only_fields = ['user', 'post']
+
+
+class MarkSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Mark
+        fields = '__all__'
+        read_only_fields = ['user', ]
